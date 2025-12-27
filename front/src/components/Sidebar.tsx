@@ -50,6 +50,7 @@ export default function Sidebar() {
 
       <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">
         <NavItem icon="dashboard" label="Dashboard" path="/" />
+        <NavItem icon="view_kanban" label="Work Orders" path="/work-orders" />
         <NavItem icon="precision_manufacturing" label="Equipment" path="/equipment" />
         <NavItem icon="receipt_long" label="Requests" path="/requests" badge={8} />
         <NavItem icon="group" label="Teams" path="/teams" />
