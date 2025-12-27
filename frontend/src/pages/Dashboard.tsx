@@ -7,6 +7,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import Header from "../components/Header";
 import KanbanColumn from "../components/KanbanColumn";
@@ -19,6 +20,8 @@ import type { Status, Ticket } from "../types";
 const STATUSES: Status[] = ["New", "In Progress", "Repaired", "Scrap"];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   const tickets = useTicketStore((s) => s.tickets);
   const setTickets = useTicketStore((s) => s.setTickets);
   const updateTicketStatus = useTicketStore((s) => s.updateTicketStatus);
@@ -31,9 +34,7 @@ export default function Dashboard() {
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
+      activationConstraint: { distance: 8 },
     })
   );
 
@@ -58,7 +59,6 @@ export default function Dashboard() {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTicket(null);
-
     if (!over) return;
 
     const ticketId = active.id as string;
@@ -67,16 +67,12 @@ export default function Dashboard() {
     const ticket = tickets.find((t) => t._id === ticketId);
     if (!ticket || ticket.status === newStatus) return;
 
-    // Optimistic update
     updateTicketStatus(ticketId, newStatus);
 
-    // Update backend
     try {
       await api.put(`/ticket/${ticketId}`, { status: newStatus });
-      console.log(`✅ Ticket ${ticketId} moved to ${newStatus}`);
     } catch (err) {
       console.error("❌ Failed to update status", err);
-      // Revert on error
       updateTicketStatus(ticketId, ticket.status);
     }
   };
@@ -86,9 +82,7 @@ export default function Dashboard() {
       await api.delete(`/ticket/${id}`);
       deleteTicket(id);
       setSelectedTicket(null);
-      console.log("✅ Ticket deleted successfully");
-    } catch (err) {
-      console.error("❌ Failed to delete ticket", err);
+    } catch {
       alert("Failed to delete ticket");
     }
   };
@@ -106,8 +100,29 @@ export default function Dashboard() {
     <>
       <Header />
 
-      {/* Full screen board */}
-      <div className="h-[calc(100vh-64px)] bg-gray-100">
+      {/* Top action bar */}
+      <div className="flex items-center justify-between px-6 py-4 bg-gray-100 border-b">
+        <h2 className="text-lg font-semibold">Maintenance Dashboard</h2>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate("/equipment")}
+            className="px-4 py-2 text-sm rounded bg-gray-800 text-white hover:bg-gray-900"
+          >
+            View Equipment
+          </button>
+
+          <button
+            onClick={() => navigate("/ticket/new")}
+            className="px-4 py-2 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
+          >
+            + Add Ticket
+          </button>
+        </div>
+      </div>
+
+      {/* Board */}
+      <div className="h-[calc(100vh-128px)] bg-gray-100">
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
@@ -125,11 +140,11 @@ export default function Dashboard() {
           </div>
 
           <DragOverlay>
-            {activeTicket ? (
+            {activeTicket && (
               <div className="rotate-3 opacity-80">
                 <TicketCard ticket={activeTicket} isDragging />
               </div>
-            ) : null}
+            )}
           </DragOverlay>
         </DndContext>
       </div>
