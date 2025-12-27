@@ -17,10 +17,7 @@ out/
 # ======================
 # Env files (SECRETS)
 # ======================
-.env
-.env.local
-.env.development
-.env.production
+
 
 # ======================
 # TypeScript

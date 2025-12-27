@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET equipment by ID
 router.get("/:id", async (req, res) => {
   try {
     const equipment = await Equipment.findById(req.params.id);

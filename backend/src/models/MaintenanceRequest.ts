@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IMaintenanceRequest extends Document {
+export interface ITicket extends Document {
   subject: string;
   equipment: string;
   team: string;
@@ -10,7 +10,7 @@ export interface IMaintenanceRequest extends Document {
   updatedAt: Date;
 }
 
-const MaintenanceRequestSchema = new Schema<IMaintenanceRequest>(
+const TicketSchema = new Schema<ITicket>(
   {
     subject: {
       type: String,
@@ -43,7 +43,4 @@ const MaintenanceRequestSchema = new Schema<IMaintenanceRequest>(
   }
 );
 
-export const MaintenanceRequest = mongoose.model<IMaintenanceRequest>(
-  "MaintenanceRequest",
-  MaintenanceRequestSchema
-);
+export const Ticket = mongoose.model<ITicket>("Ticket", TicketSchema);

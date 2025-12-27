@@ -1,27 +1,73 @@
-//import the DB to update shit in that add here SOHAM
-
-// import ticketDB from "";
-
+import { Ticket } from "../models/MaintenanceRequest.js";
 import { Request, Response } from "express";
 
 type Status = "New" | "In Progress" | "Repaired" | "Scrap";
 
-interface Ticket {
-  id: number;
-  subject: string;
-  equipment: string;
-  team: string;
-  status: Status;
-  type: "Corrective" | "Preventive";
-}
+// CREATE - Add new ticket to database
+export const addTicketsToDb = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const newTicket = await Ticket.create(req.body);
+    res.status(201).json(newTicket);
+    console.log("Ticket saved to DB successfully");
+  } catch (error) {
+    res.status(400).json({ error: "Failed to create ticket" });
+    console.error(" Error saving ticket:", error);
+  }
+};
 
-export const addTicketsToDb = async (req: Request, res: Response): Promise<void> => {
+// READ - Get all tickets
+export const getAllTickets = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const tickets = await Ticket.find().sort({ createdAt: -1 });
+    res.json(tickets);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch tickets" });
+    console.error(" Error fetching tickets:", error);
+  }
+};
 
-    //implement this SOHAM simple ticket aa gya he frontend se u just need to save it to the DB just write basic code.
-    //try catch block me karna jo kare.
-    // const newTicket = new TicketModel(ticket);
-    // return newTicket.save();
+// READ - Get single ticket by ID
+export const getTicketById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+    if (!ticket) {
+      res.status(404).json({ error: "Ticket not found" });
+      return;
+    }
+    res.json(ticket);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch ticket" });
+    console.error(" Error fetching ticket:", error);
+  }
+};
 
-    res.json({ success: true });
-    console.log("ticked saved to the DB succesfully");
-}
+// UPDATE - Update ticket
+export const updateTicket = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const ticket = await Ticket.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!ticket) {
+      res.status(404).json({ error: "Ticket not found" });
+      return;
+    }
+    res.json(ticket);
+    console.log(" Ticket updated successfully");
+  } catch (error) {
+    res.status(400).json({ error: "Failed to update ticket" });
+    console.error(" Error updating ticket:", error);
+  }
+};
