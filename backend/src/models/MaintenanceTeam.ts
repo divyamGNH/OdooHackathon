@@ -25,7 +25,7 @@ const MaintenanceTeamSchema = new Schema<IMaintenanceTeam>(
   }
 );
 
-export const MaintenanceTeam = mongoose.model<IMaintenanceTeam>(
+export const MaintenagnceTeam = mongoose.model<IMaintenanceTeam>(
   "MaintenanceTeam",
   MaintenanceTeamSchema
 );

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Equipment } from "../models/Equipment.js";
-import { MaintenanceTeam } from "../models/MaintenanceTeam.js";
 
 // Get all equipment with team details
 export const getAllEquipment = async (
