@@ -30,5 +30,5 @@ The system allows employees to raise maintenance issues, technicians to resolve 
 
 - Divyam Khandelwal — divyam.iiitv@gmail.com
 - Soham Agarwal — sohama56@gmail.com  
-- Jamil Ahmed Sayyed — sayyedjamil2502@gmail.com 
+- Jamil Ahmed Sayyed(Leader) — sayyedjamil2502@gmail.com 
 - Ojas Bhagwan Dhargave — 202451120@iiitvadodara.ac.in  
