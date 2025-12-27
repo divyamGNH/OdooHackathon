@@ -1,7 +1,13 @@
 import { useState } from "react";
+import axios from "axios";
 
 export default function TicketForm() {
   const [type, setType] = useState<"Corrective" | "Preventive">("Corrective");
+
+  const handleCreate = async() => {
+    await axios.post("http://localhost:3000",{withCredentials : true});
+    console.log("ticket raised succesfully");
+  }
 
   return (
     <div className="p-6 max-w-[500px]">
@@ -44,7 +50,7 @@ export default function TicketForm() {
         />
       )}
 
-      <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+      <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition" onClick={handleCreate}>
         Create
       </button>
     </div>
