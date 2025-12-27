@@ -1,11 +1,19 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+export type Status = "New" | "In Progress" | "Repaired" | "Scrap";
+export type TicketType = "Corrective" | "Preventive";
+
 export interface ITicket extends Document {
   subject: string;
-  equipment: string;
+
+  category: string;
+  equipmentId: number;
+  equipmentName: string;
+
   team: string;
-  status: "New" | "In Progress" | "Repaired" | "Scrap";
-  type: "Corrective" | "Preventive";
+  status: Status;
+  type: TicketType;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,21 +25,36 @@ const TicketSchema = new Schema<ITicket>(
       required: true,
       trim: true,
     },
-    equipment: {
+
+    category: {
       type: String,
       required: true,
       trim: true,
     },
+
+    equipmentId: {
+      type: Number,
+      required: true,
+    },
+
+    equipmentName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     team: {
       type: String,
       required: true,
       trim: true,
     },
+
     status: {
       type: String,
       enum: ["New", "In Progress", "Repaired", "Scrap"],
       default: "New",
     },
+
     type: {
       type: String,
       enum: ["Corrective", "Preventive"],
@@ -39,7 +62,7 @@ const TicketSchema = new Schema<ITicket>(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // creates createdAt & updatedAt
   }
 );
 

@@ -10,11 +10,14 @@ export const addTicketsToDb = async (
 ): Promise<void> => {
   try {
     const newTicket = await Ticket.create(req.body);
-    res.status(201).json(newTicket);
-    console.log("Ticket saved to DB successfully");
+
+    // ✅ Explicitly return the saved ticket (with _id)
+    res.status(201).json(newTicket.toObject());
+
+    console.log("✅ Ticket saved to DB successfully");
   } catch (error) {
+    console.error("❌ Error saving ticket:", error);
     res.status(400).json({ error: "Failed to create ticket" });
-    console.error(" Error saving ticket:", error);
   }
 };
 
