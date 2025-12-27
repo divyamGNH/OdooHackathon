@@ -2,7 +2,7 @@
 
 import { Equipment } from "../models/Equipment.js";
 import { MaintenanceTeam } from "../models/MaintenanceTeam.js";
-import { MaintenanceRequest } from "../models/MaintenanceRequest.js";
+import { Ticket } from "../models/MaintenanceRequest.js";
 
 // Example 1: Create a new Maintenance Request (Ticket)
 export const createMaintenanceRequest = async () => {
@@ -23,7 +23,7 @@ export const createMaintenanceRequest = async () => {
     });
 
     // Create the maintenance request (ticket)
-    const request = await MaintenanceRequest.create({
+    const request = await Ticket.create({
       subject: "Routine Maintenance Check",
       equipment: equipment.name,
       team: team?.teamName || "Unassigned",
@@ -55,7 +55,7 @@ export const getTicketsByStatus = async (
   status: "New" | "In Progress" | "Repaired" | "Scrap"
 ) => {
   try {
-    const requests = await MaintenanceRequest.find({ status }).sort({
+    const requests = await Ticket.find({ status }).sort({
       createdAt: -1,
     });
 
@@ -73,7 +73,7 @@ export const updateTicketStatus = async (
   status: "New" | "In Progress" | "Repaired" | "Scrap"
 ) => {
   try {
-    const request = await MaintenanceRequest.findByIdAndUpdate(
+    const request = await Ticket.findByIdAndUpdate(
       ticketId,
       { status },
       { new: true }
@@ -90,7 +90,7 @@ export const updateTicketStatus = async (
 // Example 4: Get all tickets for specific equipment
 export const getTicketsForEquipment = async (equipmentName: string) => {
   try {
-    const requests = await MaintenanceRequest.find({
+    const requests = await Ticket.find({
       equipment: equipmentName,
     }).sort({ createdAt: -1 });
 
@@ -107,7 +107,7 @@ export const getTicketsForEquipment = async (equipmentName: string) => {
 // Example 5: Get tickets by type
 export const getTicketsByType = async (type: "Corrective" | "Preventive") => {
   try {
-    const requests = await MaintenanceRequest.find({ type }).sort({
+    const requests = await Ticket.find({ type }).sort({
       createdAt: -1,
     });
 

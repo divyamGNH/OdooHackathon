@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Equipment } from "../models/Equipment.js";
 import { MaintenanceTeam } from "../models/MaintenanceTeam.js";
-import { MaintenanceRequest } from "../models/MaintenanceRequest.js";
+import { Ticket } from "../models/MaintenanceRequest.js";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const seedData = async () => {
     // Clear existing data
     await Equipment.deleteMany({});
     await MaintenanceTeam.deleteMany({});
-    await MaintenanceRequest.deleteMany({});
+    await Ticket.deleteMany({});
     console.log("🗑️  Cleared existing data");
 
     // Create Equipment
@@ -96,8 +96,8 @@ const seedData = async () => {
     ]);
     console.log(`✅ Created ${teams.length} maintenance teams`);
 
-    // Create Maintenance Requests
-    const requests = await MaintenanceRequest.insertMany([
+    // Create Tickets
+    const requests = await Ticket.insertMany([
       {
         subject: "HVAC Filter Replacement",
         equipment: "HVAC System Unit 1",

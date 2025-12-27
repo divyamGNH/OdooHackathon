@@ -1,12 +1,12 @@
 import express from "express";
-import { MaintenanceRequest } from "../models/MaintenanceRequest.js";
+import { Ticket } from "../models/MaintenanceRequest.js";
 
 const router = express.Router();
 
 // GET all tickets
 router.get("/", async (req, res) => {
   try {
-    const tickets = await MaintenanceRequest.find().sort({ createdAt: -1 });
+    const tickets = await Ticket.find().sort({ createdAt: -1 });
     res.json(tickets);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch tickets" });
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 // GET ticket by ID
 router.get("/:id", async (req, res) => {
   try {
-    const ticket = await MaintenanceRequest.findById(req.params.id);
+    const ticket = await Ticket.findById(req.params.id);
     if (!ticket) {
       return res.status(404).json({ error: "Ticket not found" });
     }
@@ -29,7 +29,7 @@ router.get("/:id", async (req, res) => {
 // POST create new ticket
 router.post("/", async (req, res) => {
   try {
-    const ticket = await MaintenanceRequest.create(req.body);
+    const ticket = await Ticket.create(req.body);
     res.status(201).json(ticket);
   } catch (error) {
     res.status(400).json({ error: "Failed to create ticket" });
@@ -39,11 +39,10 @@ router.post("/", async (req, res) => {
 // PUT update ticket
 router.put("/:id", async (req, res) => {
   try {
-    const ticket = await MaintenanceRequest.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const ticket = await Ticket.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!ticket) {
       return res.status(404).json({ error: "Ticket not found" });
     }
@@ -56,7 +55,7 @@ router.put("/:id", async (req, res) => {
 // DELETE ticket
 router.delete("/:id", async (req, res) => {
   try {
-    const ticket = await MaintenanceRequest.findByIdAndDelete(req.params.id);
+    const ticket = await Ticket.findByIdAndDelete(req.params.id);
     if (!ticket) {
       return res.status(404).json({ error: "Ticket not found" });
     }
