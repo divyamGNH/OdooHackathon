@@ -28,6 +28,11 @@ app.use(
 
 app.use(express.json());
 
+// app.options("*", cors({
+//   origin: "http://localhost:5173",
+//   credentials: true,
+// }));
+
 connectDB();
 
 app.use("/auth", authRouter);

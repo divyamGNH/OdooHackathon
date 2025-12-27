@@ -1,27 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import type { Ticket } from "../types";
+import { useEquipmentStore } from "../store/useEquipmentStore";
+import { useTicketStore } from "../store/useTicketStore";
 
 export default function TicketForm() {
+  const categoriesMap = useEquipmentStore((s) => s.categories);
+  const addTicket = useTicketStore((s) => s.addTicket);
+  const tickets = useTicketStore((s) => s.tickets);
+
+  const categories = Object.keys(categoriesMap);
+
   const [subject, setSubject] = useState("");
-  const [equipment, setEquipment] = useState("");
+  const [category, setCategory] = useState("");
+  const [equipmentId, setEquipmentId] = useState<number | "">("");
   const [type, setType] = useState<"Corrective" | "Preventive">("Corrective");
 
+  const selectedEquipment =
+    category && equipmentId !== ""
+      ? categoriesMap[category]?.find((e) => e.id === equipmentId)
+      : undefined;
+
+  useEffect(() => {
+    console.log("📌 Tickets array updated:", tickets);
+  }, [tickets]);
+
   const handleCreate = async () => {
-    alert("hi");
-    const ticket: Ticket = {
-      id: Date.now(),
+    if (!subject || !category || !selectedEquipment) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    // ⛔ TEMP ticket has NO _id — do NOT add to store
+    const payload = {
       subject,
-      equipment,
-      team: "Auto-filled Team",
-      status: "Open",
+      category: selectedEquipment.category,
+      equipmentId: selectedEquipment.id,
+      equipmentName: selectedEquipment.name,
+      team: selectedEquipment.team,
+      status: "New",
       type,
+      createdAt: new Date().toISOString(),
     };
 
-    await axios.post("http://localhost:3000/ticket/", ticket,{
-      withCredentials: true,
-    });
-    console.log("ticket sent", ticket);
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/ticket/",
+        payload
+      );
+
+      // ✅ Backend must return saved ticket WITH _id
+      const savedTicket: Ticket = res.data;
+
+      addTicket(savedTicket); // ✅ now store has correct _id
+
+      console.log("✅ Ticket created & added:", savedTicket);
+    } catch (err) {
+      console.error("❌ Ticket creation failed", err);
+    }
   };
 
   return (
@@ -38,24 +74,48 @@ export default function TicketForm() {
       />
 
       <select
-        value={equipment}
-        onChange={(e) => setEquipment(e.target.value)}
+        value={category}
+        onChange={(e) => {
+          setCategory(e.target.value);
+          setEquipmentId("");
+        }}
+        className="w-full mb-3 px-3 py-2 border rounded-md"
+      >
+        <option value="">Select Category</option>
+        {categories.map((cat) => (
+          <option key={cat} value={cat}>
+            {cat}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={equipmentId}
+        onChange={(e) => setEquipmentId(Number(e.target.value))}
+        disabled={!category}
         className="w-full mb-3 px-3 py-2 border rounded-md"
       >
         <option value="">Select Equipment</option>
-        <option value="Printer 01">Printer 01</option>
-        <option value="AC Unit">AC Unit</option>
+        {category &&
+          categoriesMap[category]?.map((eq) => (
+            <option key={eq.id} value={eq.id}>
+              {eq.name}
+            </option>
+          ))}
       </select>
 
       <input
         readOnly
-        value="Auto-filled Team"
+        value={selectedEquipment?.team || ""}
+        placeholder="Team (auto-filled)"
         className="w-full mb-3 px-3 py-2 border rounded-md bg-gray-100"
       />
 
       <select
         value={type}
-        onChange={(e) => setType(e.target.value as any)}
+        onChange={(e) =>
+          setType(e.target.value as "Corrective" | "Preventive")
+        }
         className="w-full mb-3 px-3 py-2 border rounded-md"
       >
         <option value="Corrective">Corrective</option>
