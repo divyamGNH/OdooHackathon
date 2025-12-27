@@ -12,28 +12,11 @@ const tickets: Ticket[] = [
     type: "Corrective",
   },
   {
-    id: 1,
-    subject: "Printer not working",
-    equipment: "Printer 01",
-    team: "IT",
-    status: "New",
-    type: "Corrective",
-  },
-  {
     id: 2,
     subject: "AC servicing",
     equipment: "AC Unit",
     team: "Electrical",
     status: "In Progress",
-    type: "Preventive",
-  },
-
-  {
-    id: 2,
-    subject: "AC servicing",
-    equipment: "AC Unit",
-    team: "Electrical",
-    status: "Repaired",
     type: "Preventive",
   },
 ];
