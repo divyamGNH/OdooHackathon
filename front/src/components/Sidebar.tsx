@@ -52,10 +52,8 @@ export default function Sidebar() {
         <NavItem icon="dashboard" label="Dashboard" path="/" />
         <NavItem icon="view_kanban" label="Work Orders" path="/work-orders" />
         <NavItem icon="precision_manufacturing" label="Equipment" path="/equipment" />
-        <NavItem icon="receipt_long" label="Requests" path="/requests" badge={8} />
         <NavItem icon="group" label="Teams" path="/teams" />
         <NavItem icon="calendar_month" label="Calendar" path="/calendar" />
-        <NavItem icon="bar_chart" label="Reports" path="/reports" />
       </nav>
 
       <div className="p-3 border-t border-white/10 space-y-1">

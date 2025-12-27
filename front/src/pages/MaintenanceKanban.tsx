@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { KanbanBoardColumn } from '../components/KanbanBoardColumn';
 import type { KanbanTask } from '../components/KanbanTaskCard';
+import { MaintenanceRequestModal } from '../components/MaintenanceRequestModal';
 
 // Role type for user permissions
 type UserRole = 'admin' | 'maintenance' | 'employee';
@@ -99,9 +100,10 @@ export const MaintenanceKanban: React.FC = () => {
   const [draggedTaskId, setDraggedTaskId] = useState<string | null>(null);
   const [draggedFromColumn, setDraggedFromColumn] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('myTasks');
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
 
   // Check if user can drag tasks (admin or maintenance only)
-  const canDrag = currentUserRole === 'admin' || currentUserRole === 'maintenance';
+  const canDrag = (currentUserRole as UserRole) === 'admin' || (currentUserRole as UserRole) === 'maintenance';
 
   const handleDragStart = (e: React.DragEvent, taskId: string, columnId: string) => {
     if (!canDrag) return;
@@ -190,7 +192,7 @@ export const MaintenanceKanban: React.FC = () => {
               <span className="material-symbols-outlined text-[18px]">download</span>
               <span>Export</span>
             </button>
-            <button className="flex items-center justify-center gap-2 h-10 px-5 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/20 transition-all">
+            <button className="flex items-center justify-center gap-2 h-10 px-5 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/20 transition-all" onClick={() => setIsRequestModalOpen(true)}>
               <span className="material-symbols-outlined text-[20px]">add</span>
               <span>New Work Order</span>
             </button>
@@ -285,6 +287,12 @@ export const MaintenanceKanban: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Maintenance Request Modal */}
+      <MaintenanceRequestModal
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+      />
     </div>
   );
 };
