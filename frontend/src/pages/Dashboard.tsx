@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import Header from "../components/Header";
 import KanbanColumn from "../components/KanbanColumn";
 import { useTicketStore } from "../store/useTicketStore";
@@ -14,9 +14,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/ticket/getAllTickets"
-        );
+        const res = await api.get("/ticket/getAllTickets");
         setTickets(res.data);
       } catch (err) {
         console.error("Failed to fetch tickets", err);
