@@ -26,20 +26,21 @@ export default function Dashboard() {
     fetchTickets();
   }, [setTickets]);
 
-  console.log("📊 Dashboard tickets:", tickets);
-
   return (
     <>
       <Header />
 
-      <div className="flex gap-4 p-4">
-        {STATUSES.map((status) => (
-          <KanbanColumn
-            key={status}
-            title={status}
-            tickets={tickets.filter((t) => t.status === status)}
-          />
-        ))}
+      {/* Full screen board */}
+      <div className="h-[calc(100vh-64px)] bg-gray-100">
+        <div className="grid grid-cols-4 h-full">
+          {STATUSES.map((status) => (
+            <KanbanColumn
+              key={status}
+              title={status}
+              tickets={tickets.filter((t) => t.status === status)}
+            />
+          ))}
+        </div>
       </div>
     </>
   );
