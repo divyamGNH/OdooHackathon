@@ -102,16 +102,7 @@ export default function Login() {
         </form>
 
         <div className="mt-6 text-center text-sm text-gray-600">
-          <p className="font-semibold mb-2">Demo Admin Credentials:</p>
-          <div className="bg-gray-50 p-3 rounded border border-gray-200">
-            <p className="font-mono text-xs">
-              <span className="font-semibold">Email:</span> admin@gearguard.com
-            </p>
-            <p className="font-mono text-xs mt-1">
-              <span className="font-semibold">Password:</span> admin123
-            </p>
-          </div>
-          <p className="mt-4">
+          <p>
             Don't have an account?{" "}
             <Link
               to="/signup"

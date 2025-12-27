@@ -5,9 +5,11 @@ import type { Ticket } from "../types";
 export default function TicketCard({
   ticket,
   isDragging = false,
+  onClick,
 }: {
   ticket: Ticket;
   isDragging?: boolean;
+  onClick?: () => void;
 }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: ticket._id,
@@ -23,9 +25,10 @@ export default function TicketCard({
       style={style}
       {...listeners}
       {...attributes}
+      onClick={onClick}
       className={`bg-white border border-gray-200 rounded-lg p-3 shadow hover:shadow-md transition cursor-grab active:cursor-grabbing ${
         isDragging ? "opacity-50" : ""
-      }`}
+      } ${onClick ? "hover:border-blue-300" : ""}`}
     >
       <strong className="block text-sm text-gray-800 mb-1">
         {ticket.subject}

@@ -5,6 +5,8 @@ import { connectDB } from "./database/connection.js";
 import ticketRouter from "./routes/ticketRoute.js";
 import authRouter from "./routes/authRoute.js";
 import departmentRouter from "./routes/departmentRoute.js";
+import equipmentRouter from "./routes/equipment.js";
+import teamsRouter from "./routes/teams.js";
 
 // Import models to register them with mongoose
 import "./models/User.js";
@@ -38,6 +40,8 @@ connectDB();
 app.use("/auth", authRouter);
 app.use("/department", departmentRouter);
 app.use("/ticket", ticketRouter);
+app.use("/equipment", equipmentRouter);
+app.use("/teams", teamsRouter);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server listening on PORT:${PORT}`);

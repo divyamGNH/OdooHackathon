@@ -35,9 +35,11 @@ const STATUS_STYLES: Record<
 export default function KanbanColumn({
   title,
   tickets,
+  onTicketClick,
 }: {
   title: Status;
   tickets: Ticket[];
+  onTicketClick?: (ticket: Ticket) => void;
 }) {
   const styles = STATUS_STYLES[title];
   const { setNodeRef, isOver } = useDroppable({
@@ -71,7 +73,11 @@ export default function KanbanColumn({
         }`}
       >
         {tickets.map((t) => (
-          <TicketCard key={t._id} ticket={t} />
+          <TicketCard
+            key={t._id}
+            ticket={t}
+            onClick={() => onTicketClick?.(t)}
+          />
         ))}
 
         {tickets.length === 0 && (

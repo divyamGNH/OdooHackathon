@@ -4,6 +4,7 @@ import {
   getAllTickets,
   getTicketById,
   updateTicket,
+  deleteTicket,
 } from "../controllers/ticketController.js";
 
 const router = express.Router();
@@ -19,5 +20,8 @@ router.post("/", addTicketsToDb);
 
 // PUT update ticket
 router.put("/:id", updateTicket);
+
+// DELETE ticket
+router.delete("/:id", deleteTicket);
 
 export default router;

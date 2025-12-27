@@ -11,6 +11,8 @@ import api from "../utils/api";
 import Header from "../components/Header";
 import KanbanColumn from "../components/KanbanColumn";
 import TicketCard from "../components/TicketCard";
+import TicketDetailModal from "../components/TicketDetailModal";
+import EditTicketModal from "../components/EditTicketModal";
 import { useTicketStore } from "../store/useTicketStore";
 import type { Status, Ticket } from "../types";
 
@@ -20,8 +22,12 @@ export default function Dashboard() {
   const tickets = useTicketStore((s) => s.tickets);
   const setTickets = useTicketStore((s) => s.setTickets);
   const updateTicketStatus = useTicketStore((s) => s.updateTicketStatus);
+  const updateTicket = useTicketStore((s) => s.updateTicket);
+  const deleteTicket = useTicketStore((s) => s.deleteTicket);
 
   const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [editingTicket, setEditingTicket] = useState<Ticket | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -75,6 +81,27 @@ export default function Dashboard() {
     }
   };
 
+  const handleDeleteTicket = async (id: string) => {
+    try {
+      await api.delete(`/ticket/${id}`);
+      deleteTicket(id);
+      setSelectedTicket(null);
+      console.log("✅ Ticket deleted successfully");
+    } catch (err) {
+      console.error("❌ Failed to delete ticket", err);
+      alert("Failed to delete ticket");
+    }
+  };
+
+  const handleEditTicket = (ticket: Ticket) => {
+    setSelectedTicket(null);
+    setEditingTicket(ticket);
+  };
+
+  const handleUpdateTicket = (updatedTicket: Ticket) => {
+    updateTicket(updatedTicket._id, updatedTicket);
+  };
+
   return (
     <>
       <Header />
@@ -92,6 +119,7 @@ export default function Dashboard() {
                 key={status}
                 title={status}
                 tickets={tickets.filter((t) => t.status === status)}
+                onTicketClick={setSelectedTicket}
               />
             ))}
           </div>
@@ -105,6 +133,24 @@ export default function Dashboard() {
           </DragOverlay>
         </DndContext>
       </div>
+
+      {/* Modals */}
+      {selectedTicket && (
+        <TicketDetailModal
+          ticket={selectedTicket}
+          onClose={() => setSelectedTicket(null)}
+          onDelete={handleDeleteTicket}
+          onEdit={handleEditTicket}
+        />
+      )}
+
+      {editingTicket && (
+        <EditTicketModal
+          ticket={editingTicket}
+          onClose={() => setEditingTicket(null)}
+          onUpdate={handleUpdateTicket}
+        />
+      )}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import type { Ticket } from "../types";
 import { useEquipmentStore } from "../store/useEquipmentStore";
@@ -6,6 +7,7 @@ import { useTicketStore } from "../store/useTicketStore";
 import Header from "../components/Header";
 
 export default function TicketForm() {
+  const navigate = useNavigate();
   const categoriesMap = useEquipmentStore((s) => s.categories);
   const addTicket = useTicketStore((s) => s.addTicket);
   const tickets = useTicketStore((s) => s.tickets);
@@ -44,26 +46,26 @@ export default function TicketForm() {
     };
 
     try {
-      const res = await axios.post(
-        "http://localhost:3000/ticket/",
-        payload
-      );
+      const res = await axios.post("http://localhost:3000/ticket/", payload);
 
       const savedTicket: Ticket = res.data;
       addTicket(savedTicket);
 
       console.log("✅ Ticket created & added:", savedTicket);
+
+      // Redirect to dashboard
+      navigate("/");
     } catch (err) {
       console.error("❌ Ticket creation failed", err);
+      alert("Failed to create ticket");
     }
   };
 
   return (
     <div>
-      <Header/>
-        <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-10">
+      <Header />
+      <div className="min-h-screen bg-gray-100 flex justify-center items-start pt-10">
         <div className="w-full max-w-xl bg-white rounded-lg shadow-sm border border-gray-200">
-          
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-base font-semibold text-gray-800">
@@ -76,7 +78,6 @@ export default function TicketForm() {
 
           {/* Form */}
           <div className="p-6 space-y-5">
-
             {/* Subject */}
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">
