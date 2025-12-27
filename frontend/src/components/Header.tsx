@@ -12,10 +12,8 @@ export default function Header() {
 
   return (
     <div className="p-4 border-b border-gray-700 bg-gray-800 text-white flex justify-between items-center">
-      <h2 className="text-xl font-semibold">
-        GearGuard – Maintenance Tracker
-      </h2>
-      
+      <h2 className="text-xl font-semibold">GearGuard – Maintenance Tracker</h2>
+
       <div className="flex items-center gap-4">
         {user && (
           <>
@@ -35,4 +33,3 @@ export default function Header() {
     </div>
   );
 }
-

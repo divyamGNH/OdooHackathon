@@ -37,9 +37,7 @@ export default function Signup() {
       navigate("/");
     } catch (err: any) {
       console.error("Signup error:", err);
-      setError(
-        err.response?.data?.error || "Signup failed. Please try again."
-      );
+      setError(err.response?.data?.error || "Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -52,9 +50,7 @@ export default function Signup() {
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Create Account
           </h1>
-          <p className="text-gray-600">
-            Maintenance Management System
-          </p>
+          <p className="text-gray-600">Maintenance Management System</p>
         </div>
 
         {error && (
@@ -156,7 +152,10 @@ export default function Signup() {
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link
+              to="/login"
+              className="text-blue-600 hover:text-blue-700 font-semibold"
+            >
               Login here
             </Link>
           </p>

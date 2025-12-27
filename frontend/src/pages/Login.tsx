@@ -33,9 +33,7 @@ export default function Login() {
       navigate("/");
     } catch (err: any) {
       console.error("Login error:", err);
-      setError(
-        err.response?.data?.error || "Login failed. Please try again."
-      );
+      setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -45,12 +43,8 @@ export default function Login() {
     <div className="min-h-screen bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-md p-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Admin Login
-          </h1>
-          <p className="text-gray-600">
-            Maintenance Management System
-          </p>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Login</h1>
+          <p className="text-gray-600">Maintenance Management System</p>
         </div>
 
         {error && (
@@ -119,7 +113,10 @@ export default function Login() {
           </div>
           <p className="mt-4">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+            <Link
+              to="/signup"
+              className="text-blue-600 hover:text-blue-700 font-semibold"
+            >
               Sign up here
             </Link>
           </p>
