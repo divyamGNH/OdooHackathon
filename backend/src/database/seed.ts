@@ -1,160 +1,169 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import { Equipment } from "../models/Equipment.js";
+import { connectDB } from "./connection.js";
+import { Department } from "../models/Department.js";
+import { User } from "../models/User.js";
 import { MaintenanceTeam } from "../models/MaintenanceTeam.js";
+import { Equipment } from "../models/Equipment.js";
 import { Ticket } from "../models/MaintenanceRequest.js";
 
-dotenv.config();
-
-const seedData = async () => {
+const seedDatabase = async () => {
   try {
-    const mongoURI =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/gearguard";
-    await mongoose.connect(mongoURI);
-    console.log("✅ Connected to MongoDB");
+    await connectDB();
 
     // Clear existing data
-    await Equipment.deleteMany({});
+    await Department.deleteMany({});
+    await User.deleteMany({});
     await MaintenanceTeam.deleteMany({});
+    await Equipment.deleteMany({});
     await Ticket.deleteMany({});
+
     console.log("🗑️  Cleared existing data");
 
-    // Create Equipment
-    const equipment = await Equipment.insertMany([
+    // 1. Create Departments
+    const departments = await Department.create([
+      { name: "Production" },
+      { name: "Maintenance" },
+      { name: "IT" },
+      { name: "Warehouse" },
+    ]);
+    console.log(`✅ Created ${departments.length} departments`);
+
+    // 2. Create Users
+    const users = await User.create([
       {
-        name: "Industrial Lathe Machine",
-        category: "Manufacturing",
-        status: "operational",
-        location: "Building A - Floor 2",
-        purchaseDate: new Date("2023-01-15"),
-        lastMaintenanceDate: new Date("2024-11-20"),
-        notes: "High precision lathe for metal parts",
+        name: "Admin User",
+        email: "admin@gearguard.com",
+        password: "admin123",
+        role: "admin",
+        departmentId: departments[1]!._id, // Maintenance
       },
       {
-        name: "HVAC System Unit 1",
-        category: "Climate Control",
-        status: "maintenance",
-        location: "Building B - Roof",
-        purchaseDate: new Date("2022-06-10"),
-        lastMaintenanceDate: new Date("2024-10-05"),
-        notes: "Requires filter replacement",
+        name: "John Manager",
+        email: "manager@gearguard.com",
+        password: "manager123",
+        role: "manager",
+        departmentId: departments[0]!._id, // Production
       },
       {
-        name: "Forklift - FL-203",
-        category: "Transportation",
-        status: "operational",
-        location: "Warehouse - Zone C",
-        purchaseDate: new Date("2021-03-20"),
-        lastMaintenanceDate: new Date("2024-12-01"),
+        name: "Mike Technician",
+        email: "tech1@gearguard.com",
+        password: "tech123",
+        role: "technician",
+        departmentId: departments[1]!._id, // Maintenance
       },
       {
-        name: "CNC Milling Machine",
-        category: "Manufacturing",
-        status: "broken",
-        location: "Building A - Floor 3",
-        purchaseDate: new Date("2020-08-12"),
-        lastMaintenanceDate: new Date("2024-09-15"),
-        notes: "Spindle motor failure - urgent repair needed",
+        name: "Sarah Technician",
+        email: "tech2@gearguard.com",
+        password: "tech123",
+        role: "technician",
+        departmentId: departments[1]!._id, // Maintenance
       },
       {
-        name: "Conveyor Belt System",
-        category: "Logistics",
-        status: "operational",
-        location: "Warehouse - Main Line",
-        purchaseDate: new Date("2022-11-05"),
-        lastMaintenanceDate: new Date("2024-11-28"),
+        name: "Regular User",
+        email: "user@gearguard.com",
+        password: "user123",
+        role: "user",
+        departmentId: departments[3]!._id, // Warehouse
       },
     ]);
-    console.log(`✅ Created ${equipment.length} equipment items`);
+    console.log(`✅ Created ${users.length} users`);
 
-    // Create Maintenance Teams
-    const teams = await MaintenanceTeam.insertMany([
-      {
-        teamName: "Mechanical Maintenance Team",
-        members: ["John Smith", "Sarah Johnson", "Mike Davis"],
-        specialization: "Mechanical Systems",
-        availability: "available",
-        contactEmail: "mechanical@gearguard.com",
-        contactPhone: "+1-555-0101",
-      },
-      {
-        teamName: "HVAC Specialists",
-        members: ["Lisa Brown", "Tom Wilson"],
-        specialization: "HVAC and Climate Control",
-        availability: "busy",
-        contactEmail: "hvac@gearguard.com",
-        contactPhone: "+1-555-0102",
-      },
-      {
-        teamName: "Electrical Team",
-        members: ["David Lee", "Emma Garcia", "Ryan Martinez", "Olivia Taylor"],
-        specialization: "Electrical Systems",
-        availability: "available",
-        contactEmail: "electrical@gearguard.com",
-        contactPhone: "+1-555-0103",
-      },
+    // 3. Create Maintenance Teams
+    const teams = await MaintenanceTeam.create([
+      { name: "Mechanical Team", description: "Handles mechanical equipment" },
+      { name: "Electrical Team", description: "Handles electrical systems" },
+      { name: "IT Team", description: "Handles IT infrastructure" },
     ]);
     console.log(`✅ Created ${teams.length} maintenance teams`);
 
-    // Create Tickets
-    const requests = await Ticket.insertMany([
+    // 4. Create Equipment
+    const equipment = await Equipment.create([
       {
-        subject: "HVAC Filter Replacement",
-        equipment: "HVAC System Unit 1",
-        team: "HVAC Specialists",
-        status: "In Progress",
-        type: "Preventive",
+        name: "CNC Machine A1",
+        serialNumber: "CNC-001",
+        maintenanceTeamId: teams[0]!._id,
       },
       {
-        subject: "CNC Spindle Motor Repair",
-        equipment: "CNC Milling Machine",
-        team: "Mechanical Maintenance Team",
-        status: "In Progress",
-        type: "Corrective",
+        name: "Conveyor Belt B2",
+        serialNumber: "CONV-002",
+        maintenanceTeamId: teams[0]!._id,
       },
       {
-        subject: "Routine Forklift Inspection",
-        equipment: "Forklift - FL-203",
-        team: "Mechanical Maintenance Team",
-        status: "New",
-        type: "Preventive",
+        name: "Main Server",
+        serialNumber: "SRV-003",
+        maintenanceTeamId: teams[2]!._id,
       },
       {
-        subject: "Lathe Calibration Check",
-        equipment: "Industrial Lathe Machine",
-        team: "Mechanical Maintenance Team",
-        status: "Repaired",
-        type: "Preventive",
+        name: "Forklift C1",
+        serialNumber: "FORK-004",
+        maintenanceTeamId: teams[0]!._id,
       },
       {
-        subject: "Conveyor Belt Lubrication",
-        equipment: "Conveyor Belt System",
-        team: "Mechanical Maintenance Team",
-        status: "New",
-        type: "Preventive",
-      },
-      {
-        subject: "Emergency CNC Repair",
-        equipment: "CNC Milling Machine",
-        team: "Electrical Team",
-        status: "Scrap",
-        type: "Corrective",
+        name: "Power Generator",
+        serialNumber: "GEN-005",
+        maintenanceTeamId: teams[1]!._id,
       },
     ]);
-    console.log(`✅ Created ${requests.length} maintenance requests`);
+    console.log(`✅ Created ${equipment.length} equipment`);
+
+    // 5. Create Tickets
+    const tickets = await Ticket.create([
+      {
+        subject: "CNC Machine oil leak",
+        equipment: "CNC Machine A1",
+        team: "Mechanical Team",
+        status: "New",
+        type: "Corrective",
+      },
+      {
+        subject: "Conveyor belt motor replacement",
+        equipment: "Conveyor Belt B2",
+        team: "Mechanical Team",
+        status: "In Progress",
+        type: "Preventive",
+      },
+      {
+        subject: "Server cooling system check",
+        equipment: "Main Server",
+        team: "IT Team",
+        status: "New",
+        type: "Preventive",
+      },
+      {
+        subject: "Forklift brake inspection",
+        equipment: "Forklift C1",
+        team: "Mechanical Team",
+        status: "Repaired",
+        type: "Corrective",
+      },
+      {
+        subject: "Generator fuel system maintenance",
+        equipment: "Power Generator",
+        team: "Electrical Team",
+        status: "In Progress",
+        type: "Preventive",
+      },
+    ]);
+    console.log(`✅ Created ${tickets.length} tickets`);
 
     console.log("\n🎉 Database seeded successfully!");
-    console.log("\nSummary:");
-    console.log(`- Equipment: ${equipment.length}`);
-    console.log(`- Teams: ${teams.length}`);
-    console.log(`- Requests: ${requests.length}`);
+    console.log(`\n📊 Summary:`);
+    console.log(`   - Departments: ${departments.length}`);
+    console.log(`   - Users: ${users.length}`);
+    console.log(`   - Teams: ${teams.length}`);
+    console.log(`   - Equipment: ${equipment.length}`);
+    console.log(`   - Tickets: ${tickets.length}`);
 
-    await mongoose.disconnect();
-    console.log("\n✅ Disconnected from MongoDB");
+    console.log(`\n🔑 Test Credentials:`);
+    console.log(`   Admin: admin@gearguard.com / admin123`);
+    console.log(`   Manager: manager@gearguard.com / manager123`);
+    console.log(`   Technician: tech1@gearguard.com / tech123`);
+    console.log(`   User: user@gearguard.com / user123`);
+
+    process.exit(0);
   } catch (error) {
-    console.error("❌ Seed Error:", error);
+    console.error("❌ Error seeding database:", error);
     process.exit(1);
   }
 };
 
-seedData();
+seedDatabase();

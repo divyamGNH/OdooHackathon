@@ -2,12 +2,8 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IEquipment extends Document {
   name: string;
-  category: string;
-  status: "operational" | "maintenance" | "broken";
-  location: string;
-  purchaseDate: Date;
-  lastMaintenanceDate?: Date;
-  notes?: string;
+  serialNumber: string;
+  maintenanceTeamId: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,31 +15,16 @@ const EquipmentSchema = new Schema<IEquipment>(
       required: true,
       trim: true,
     },
-    category: {
+    serialNumber: {
       type: String,
       required: true,
+      unique: true,
       trim: true,
     },
-    status: {
-      type: String,
-      enum: ["operational", "maintenance", "broken"],
-      default: "operational",
-    },
-    location: {
-      type: String,
+    maintenanceTeamId: {
+      type: Schema.Types.ObjectId,
+      ref: "MaintenanceTeam",
       required: true,
-      trim: true,
-    },
-    purchaseDate: {
-      type: Date,
-      required: true,
-    },
-    lastMaintenanceDate: {
-      type: Date,
-    },
-    notes: {
-      type: String,
-      trim: true,
     },
   },
   {
