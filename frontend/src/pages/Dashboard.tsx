@@ -37,7 +37,7 @@ export default function Dashboard() {
         const res = await api.get("/ticket/getAllTickets");
         setTickets(res.data);
       } catch (err) {
-        console.error("Failed to fetch tickets", err);
+        console.error("❌ Failed to fetch tickets", err);
       }
     };
 
